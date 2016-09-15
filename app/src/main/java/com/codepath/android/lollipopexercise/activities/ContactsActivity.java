@@ -1,15 +1,17 @@
 package com.codepath.android.lollipopexercise.activities;
 
+import com.codepath.android.lollipopexercise.R;
+import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
+import com.codepath.android.lollipopexercise.models.Contact;
+
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.codepath.android.lollipopexercise.R;
-import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
-import com.codepath.android.lollipopexercise.models.Contact;
+import android.view.View;
 
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         // Bind adapter to list
         rvContacts.setAdapter(mAdapter);
+
     }
 
     @Override
@@ -60,6 +63,26 @@ public class ContactsActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        switch (id) {
+            case (R.id.miAdd):
+                Contact contact = Contact.getRandomContact(this);
+                contacts.add(0, contact);
+                mAdapter.notifyItemInserted(0);
+                rvContacts.scrollToPosition(0);
+
+                Snackbar.make(rvContacts, R.string.snackbar_text, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.snackbar_action_text, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                contacts.remove(0);
+                                mAdapter.notifyItemRemoved(0);
+                                rvContacts.scrollToPosition(0);
+                            }
+                        })
+                        .show();
+                break;
+        }
 
         return super.onOptionsItemSelected(item);
     }
